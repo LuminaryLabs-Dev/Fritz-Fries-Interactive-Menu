@@ -1,0 +1,11 @@
+node_modules/
+.next/
+out/
+.env*
+!.env.example
+*.tgz
+playwright-report/
+test-results/
+public/vendor/
+validation/runtime/
+.DS_Store

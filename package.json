@@ -1,0 +1,20 @@
+{
+  "name": "fritz-fries-interactive-menu",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=22.16.0 <23" },
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "test": "node --test tests/unit/*.test.mjs",
+    "capture:reference": "node scripts/capture-reference.mjs"
+  },
+  "dependencies": {
+    "next": "16.3.6",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "aframe": "1.8.0"
+  },
+  "devDependencies": { "@playwright/test": "1.55.1" }
+}
