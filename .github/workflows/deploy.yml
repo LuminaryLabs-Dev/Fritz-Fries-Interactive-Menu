@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: fritz-build-${{ github.ref }}
@@ -35,6 +35,23 @@ jobs:
       - run: npm test
       - run: npm run build
       - run: npm run validate:static
+      - name: Publish validated export to repository root
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: npm run publish:root
+      - name: Commit generated Pages root
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        working-directory: .
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A -- . ':!source'
+          git add .pages-generated.json .nojekyll 2>/dev/null || true
+          if git diff --cached --quiet; then
+            echo "Generated Pages root already matches validated build."
+          else
+            git commit -m "build: publish validated static Pages output [skip ci]"
+            git push origin HEAD:main
+          fi
       - name: Install browser
         run: npx playwright install --with-deps chromium
       - name: Capture the original website
