@@ -8,7 +8,9 @@
     "dev": "next dev",
     "build": "next build",
     "test": "node --test tests/unit/*.test.mjs",
-    "capture:reference": "node scripts/capture-reference.mjs"
+    "capture:reference": "node scripts/capture-reference.mjs",
+    "validate:static": "node scripts/validate-static.mjs",
+    "publish:root": "node scripts/publish-to-root.mjs"
   },
   "dependencies": {
     "next": "16.3.6",

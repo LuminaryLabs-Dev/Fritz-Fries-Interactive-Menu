@@ -1,5 +1,6 @@
 import { chromium } from '@playwright/test';
 import { mkdir, writeFile } from 'node:fs/promises';
+
 const dir = 'reference';
 await mkdir(dir + '/screenshots', { recursive: true });
 const browser = await chromium.launch({ headless: true, args: ['--no-sandbox'] });
@@ -21,4 +22,6 @@ try {
   await writeFile(dir + '/inventory.json', JSON.stringify(inventory, null, 2));
   await page.setViewportSize({ width: 390, height: 844 });
   await page.screenshot({ path: dir + '/screenshots/original-mobile.png', fullPage: true });
-} finally { await browser.close(); }
+} finally {
+  await browser.close();
+}

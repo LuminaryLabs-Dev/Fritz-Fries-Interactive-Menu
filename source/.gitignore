@@ -1,0 +1,10 @@
+node_modules/
+.next/
+out/
+.env*
+!.env.example
+reference/
+playwright-report/
+test-results/
+validation/runtime/
+.DS_Store

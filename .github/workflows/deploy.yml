@@ -1,15 +1,19 @@
 name: Build and deploy Next.js
+
 on:
   push:
-    branches: [development]
+    branches: [main]
   pull_request:
-    branches: [development]
+    branches: [main]
   workflow_dispatch:
+
 permissions:
   contents: read
+
 concurrency:
   group: fritz-build-${{ github.ref }}
   cancel-in-progress: false
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -17,16 +21,22 @@ jobs:
     env:
       NEXT_TELEMETRY_DISABLED: '1'
       NEXT_PUBLIC_BASE_PATH: /Fritz-Fries-Interactive-Menu
+    defaults:
+      run:
+        working-directory: source
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: '22.16.0'
-      - name: Resolve initial lockfile and install
+          cache: npm
+          cache-dependency-path: source/package-lock.json
+      - name: Install dependencies
         run: |
           if test -f package-lock.json; then npm ci; else npm install; fi
       - run: npm test
       - run: npm run build
+      - run: npm run validate:static
       - name: Install browser
         run: npx playwright install --with-deps chromium
       - name: Capture the original website
@@ -42,14 +52,15 @@ jobs:
           name: fritz-build-evidence
           include-hidden-files: true
           path: |
-            out/
-            reference/
-            package-lock.json
-            validation/runtime-pack.tgz
+            source/out/
+            source/reference/
+            source/package-lock.json
+            source/validation/runtime-pack.tgz
           retention-days: 7
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: out
+          path: source/out
+
   deploy:
     if: github.event_name != 'pull_request' && vars.PUBLISH_DEMO == 'true'
     needs: build
